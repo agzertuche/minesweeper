@@ -1,6 +1,10 @@
 import React from 'react';
 import './App.scss';
-import Cell from './components/Cell/Cell';
+import Cell from '../Cell/Cell';
+
+// TODO: game status => playing, paused, gameover
+// TODO: game stats => record, time, difficulty
+// TODO: game theme => default, dark, halloween
 
 function App() {
   return (
