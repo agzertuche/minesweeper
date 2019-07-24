@@ -1,21 +1,30 @@
 import React, { useState } from 'react';
 import Button from '../Button/Button';
 
-function Cell({ x, y, hasMine, value }) {
-  // state => isFlagged, isRevealed
-  const [isRevealed, setRevealed] = useState(false);
+const STATUS = Object.freeze({
+  FLAGGED: Symbol('FLAGGED'),
+  QUESTIONED: Symbol('QUESTIONED'),
+  REVEALED: Symbol('REVEALED'),
+  NONE: Symbol('NONE'),
+});
+
+function Cell({ value, row, column, children }) {
+  const [status, setStatus] = useState(STATUS.NONE);
 
   // TODO: status: flagged, questioned, revealed
-  // TODO: hasMine
-  // TODO: valud: [0-8]
+  // TODO: value: [0-9]
 
-  function handleRevealed() {
-    setRevealed(true);
+  function handleClick() {
+    setStatus(STATUS.REVEALED);
   }
 
   return (
-    <div onClick={() => handleRevealed()}>
-      <Button>{isRevealed ? 'flagged' : value}</Button>
+    <div onClick={() => handleClick()}>
+      <Button>
+        {status !== STATUS.NONE ? status.toString() : value}
+        {value === 9 ? '💣' : value === 0 ? '' : value}
+        {children}
+      </Button>
     </div>
   );
 }
