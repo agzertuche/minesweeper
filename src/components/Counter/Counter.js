@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 
-// TODO: increment
-// TODO: decrement
-// TODO: handleTimer
+// TODO: handleTimer need to implement a way to increment/decrement values by time as explained by danabramov on his blog and by click events
 
-function Counter({ children }) {
-  return <div>I'm the counter or timer</div>;
+function Counter({}) {
+  const [count, setCount] = useState(0);
+
+  const increment = () => setCount(count => count + 1);
+  const decrement = () => setCount(count => count - 1);
+
+  return <div>{count}</div>;
 }
 
 export default Counter;

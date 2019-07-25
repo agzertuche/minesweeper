@@ -1,13 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 // TODO: render emojis based on the status, sad, happy, win
 
-function Button({ children }) {
-  const [count, setCount] = useState(0);
-
+function Button(props) {
   return (
-    <button type="button" onClick={() => setCount(count + 1)}>
-      {children}
+    <button type="button" {...props}>
+      {props.children}
     </button>
   );
 }

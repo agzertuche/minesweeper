@@ -19,13 +19,11 @@ function Cell({ value, row, column, children }) {
   }
 
   return (
-    <div onClick={() => handleClick()}>
-      <Button>
-        {status !== STATUS.NONE ? status.toString() : value}
-        {value === 9 ? '💣' : value === 0 ? '' : value}
-        {children}
-      </Button>
-    </div>
+    <Button onClick={() => handleClick()}>
+      {status !== STATUS.NONE ? status.toString() : value}
+      {value === 9 ? '💣' : value === 0 ? '' : value}
+      {children}
+    </Button>
   );
 }
 
