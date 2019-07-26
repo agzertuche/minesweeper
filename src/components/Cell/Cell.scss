@@ -1,0 +1,19 @@
+.cell {
+  background: #cccccc;
+  border: 3px outset #eeeeee;
+  cursor: pointer;
+
+  &:active {
+    border-style: inset;
+  }
+
+  &:disabled {
+    cursor: default;
+    background: #bbbbbb;
+    border: 1px dotted #666666;
+  }
+
+  &:hover:not(:disabled) {
+    background: #dddddd;
+  }
+}

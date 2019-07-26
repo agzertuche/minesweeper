@@ -1,29 +1,73 @@
 import React, { useState } from 'react';
-import Button from '../Button/Button';
+import './Cell.scss';
 
-const STATUS = Object.freeze({
+export const STATUS = Object.freeze({
   FLAGGED: Symbol('FLAGGED'),
   QUESTIONED: Symbol('QUESTIONED'),
   REVEALED: Symbol('REVEALED'),
-  NONE: Symbol('NONE'),
+  HIDDEN: Symbol('HIDDEN'),
 });
 
 function Cell({ value, row, column, children }) {
-  const [status, setStatus] = useState(STATUS.NONE);
+  const [status, setStatus] = useState(STATUS.HIDDEN);
 
-  // TODO: status: flagged, questioned, revealed
-  // TODO: value: [0-9]
+  const updateStatus = event => {
+    event.preventDefault();
+    setStatus(prevStatus => {
+      switch (prevStatus) {
+        case STATUS.FLAGGED:
+          return STATUS.QUESTIONED;
+        case STATUS.QUESTIONED:
+          return STATUS.HIDDEN;
+        case STATUS.HIDDEN:
+          return STATUS.FLAGGED;
+        default:
+          return prevStatus;
+      }
+    });
+  };
 
-  function handleClick() {
+  const reveal = () => {
+    if (status === STATUS.FLAGGED || status === STATUS.QUESTIONED) {
+      return;
+    }
+
     setStatus(STATUS.REVEALED);
-  }
+    if (hasMine()) {
+      // ! TODO: trigger game over
+    }
+  };
+
+  const hasMine = () => {
+    return value === 9;
+  };
+
+  const printValue = () => {
+    if (status === STATUS.REVEALED) {
+      return value === 0 ? '' : hasMine() ? '💣' : value;
+    }
+
+    if (status === STATUS.FLAGGED) {
+      return '🚩';
+    }
+
+    if (status === STATUS.QUESTIONED) {
+      return '❓';
+    }
+
+    return;
+  };
 
   return (
-    <Button onClick={() => handleClick()}>
-      {status !== STATUS.NONE ? status.toString() : value}
-      {value === 9 ? '💣' : value === 0 ? '' : value}
-      {children}
-    </Button>
+    <button
+      type="button"
+      className="cell"
+      onClick={e => reveal(e)}
+      onContextMenu={e => updateStatus(e)}
+      disabled={status === STATUS.REVEALED}
+    >
+      {printValue()}
+    </button>
   );
 }
 

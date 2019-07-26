@@ -4,7 +4,7 @@ const DIFFICULTY = Object.freeze({
   ADVANCED: Symbol('ADVANCED'),
 });
 
-const CONFIG = Object.freeze({
+export const CONFIG = Object.freeze({
   BEGGINER: {
     mines: 10,
     size: 9,

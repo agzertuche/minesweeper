@@ -1,4 +1,5 @@
 import React from 'react';
+import './Button.scss';
 
 // TODO: render emojis based on the status, sad, happy, win
 
