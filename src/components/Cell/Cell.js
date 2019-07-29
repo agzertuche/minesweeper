@@ -1,72 +1,35 @@
 import React, { useState } from 'react';
 import './Cell.scss';
+import { CELL_STATUS } from '../../enums';
 
-export const STATUS = Object.freeze({
-  FLAGGED: Symbol('FLAGGED'),
-  QUESTIONED: Symbol('QUESTIONED'),
-  REVEALED: Symbol('REVEALED'),
-  HIDDEN: Symbol('HIDDEN'),
-});
-
-function Cell({ value, row, column, children }) {
-  const [status, setStatus] = useState(STATUS.HIDDEN);
-
-  const updateStatus = event => {
-    event.preventDefault();
-    setStatus(prevStatus => {
-      switch (prevStatus) {
-        case STATUS.FLAGGED:
-          return STATUS.QUESTIONED;
-        case STATUS.QUESTIONED:
-          return STATUS.HIDDEN;
-        case STATUS.HIDDEN:
-          return STATUS.FLAGGED;
-        default:
-          return prevStatus;
-      }
-    });
-  };
-
-  const reveal = () => {
-    if (status === STATUS.FLAGGED || status === STATUS.QUESTIONED) {
-      return;
-    }
-
-    setStatus(STATUS.REVEALED);
-    if (hasMine()) {
-      // ! TODO: trigger game over
-    }
-  };
-
+function Cell({ row, column, status, value, onRevealed, children }) {
   const hasMine = () => {
     return value === 9;
   };
 
   const printValue = () => {
-    if (status === STATUS.REVEALED) {
+    if (status === CELL_STATUS.REVEALED) {
       return value === 0 ? '' : hasMine() ? '💣' : value;
     }
 
-    if (status === STATUS.FLAGGED) {
+    if (status === CELL_STATUS.FLAGGED) {
       return '🚩';
     }
 
-    if (status === STATUS.QUESTIONED) {
+    if (status === CELL_STATUS.QUESTIONED) {
       return '❓';
     }
-
-    return;
   };
 
   return (
     <button
       type="button"
       className="cell"
-      onClick={e => reveal(e)}
-      onContextMenu={e => updateStatus(e)}
-      disabled={status === STATUS.REVEALED}
+      onClick={() => onRevealed(row, column)}
+      disabled={status === CELL_STATUS.REVEALED}
     >
       {printValue()}
+      {children}
     </button>
   );
 }
