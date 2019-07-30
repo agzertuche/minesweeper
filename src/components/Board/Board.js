@@ -4,17 +4,16 @@ import './Board.scss';
 import useMinesweeper from './useMinesweeper';
 
 function Board({ size, mines }) {
-  const [cells, onCellRevealed] = useMinesweeper(size, mines);
+  //TODO: add active cell I think it will simplify minesweeper logic + hooks
+  const [cells, setCells, onCellRevealed] = useMinesweeper(size, mines);
 
   const handleReveal = (row, column) => {
-    onCellRevealed(row, column);
+    setCells(cells => [...onCellRevealed(row, column)]);
   };
 
-  console.log('board', { cells });
   return (
     <section className={`columns-${cells.length}`}>
       {cells.map(cell => {
-        console.log('cells', { cell });
         return cell.map(({ row, column, status, value }) => (
           <Cell
             key={`${row},${column}`}

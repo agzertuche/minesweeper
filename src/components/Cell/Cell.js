@@ -29,7 +29,6 @@ function Cell({ row, column, status, value, onRevealed, children }) {
       disabled={status === CELL_STATUS.REVEALED}
     >
       {printValue()}
-      {children}
     </button>
   );
 }
