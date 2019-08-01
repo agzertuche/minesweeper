@@ -22,3 +22,18 @@ export const CELL_STATUS = Object.freeze({
   REVEALED: Symbol('REVEALED'),
   HIDDEN: Symbol('HIDDEN'),
 });
+
+export const CONFIG = Object.freeze({
+  [DIFFICULTY.BEGGINER]: {
+    mines: 10,
+    size: 9,
+  },
+  [DIFFICULTY.INTERMEDIATE]: {
+    mines: 40,
+    size: 16,
+  },
+  [DIFFICULTY.ADVANCED]: {
+    mines: 99,
+    size: 24,
+  },
+});

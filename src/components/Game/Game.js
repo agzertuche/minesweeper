@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import './Game.scss';
 import { Board } from '../Board';
 import { Counter } from '../Counter';
-import { GAME_STATUS, DIFFICULTY } from '../../enums';
+import { Timer } from '../Timer';
+import { GAME_STATUS, DIFFICULTY, CONFIG } from '../../enums';
 
 // TODO: game status => playing, paused, gameover
 // TODO: game stats => record, time
@@ -12,20 +13,7 @@ function Game() {
   const [status, setStatus] = useState(GAME_STATUS.PAUSED);
   const [difficulty, setDifficulty] = useState(DIFFICULTY.BEGGINER);
 
-  const CONFIG = Object.freeze({
-    [DIFFICULTY.BEGGINER]: {
-      mines: 10,
-      size: 9,
-    },
-    [DIFFICULTY.INTERMEDIATE]: {
-      mines: 40,
-      size: 16,
-    },
-    [DIFFICULTY.ADVANCED]: {
-      mines: 99,
-      size: 24,
-    },
-  });
+  const { mines, size } = CONFIG[difficulty];
 
   const newGame = () => {
     setDifficulty(
@@ -42,12 +30,12 @@ function Game() {
   return (
     <main>
       <header>
-        <Counter>Bomb counter</Counter>
+        <Counter count={mines} />
         <button onClick={newGame}>New Game</button>
-        <Counter>Timer counter</Counter>
+        <Timer />
       </header>
       <section>
-        <Board {...CONFIG[difficulty]} />
+        <Board mines={mines} size={size} />
       </section>
       <footer>{status.toString()}</footer>
     </main>

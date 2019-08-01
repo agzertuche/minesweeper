@@ -2,6 +2,7 @@ button {
   background: #cccccc;
   border: 3px outset #eeeeee;
   cursor: pointer;
+  font-size: 14px;
 
   &:active {
     border-style: inset;
@@ -11,6 +12,7 @@ button {
     cursor: default;
     background: #bbbbbb;
     border: 1px dotted #666666;
+    color: #333333;
   }
 
   &:hover:not(:disabled) {

@@ -5,7 +5,6 @@ export default function useMinesweeper(size, mines) {
   const [cells, setCells] = useState([]);
 
   useEffect(() => {
-    let _cells = [];
     const createBoard = size => {
       for (let row = 0; row < size; row++) {
         _cells[row] = [];
@@ -61,6 +60,7 @@ export default function useMinesweeper(size, mines) {
       }
     };
 
+    let _cells = [];
     createBoard(size);
     placeMines(mines);
     setCells(_cells);
