@@ -27,10 +27,23 @@ function Game() {
     },
   });
 
+  const newGame = () => {
+    setDifficulty(
+      difficulty === DIFFICULTY.BEGGINER
+        ? DIFFICULTY.INTERMEDIATE
+        : difficulty === DIFFICULTY.INTERMEDIATE
+        ? DIFFICULTY.ADVANCED
+        : difficulty === DIFFICULTY.ADVANCED
+        ? DIFFICULTY.BEGGINER
+        : DIFFICULTY.BEGGINER,
+    );
+  };
+
   return (
     <main>
       <header>
         <Counter>Bomb counter</Counter>
+        <button onClick={newGame}>New Game</button>
         <Counter>Timer counter</Counter>
       </header>
       <section>
