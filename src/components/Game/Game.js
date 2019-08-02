@@ -3,9 +3,9 @@ import './Game.scss';
 import { Board } from '../Board';
 import { Counter } from '../Counter';
 import { Timer } from '../Timer';
-import { GAME_STATUS, DIFFICULTY, CONFIG } from '../../enums';
+import { GAME_STATUS, DIFFICULTY, CONFIG } from '../../utils/enums';
 
-// TODO: game status => playing, paused, gameover
+// ! TODO: game status => playing, paused, gameover, completed/win
 // TODO: game stats => record, time
 // TODO: game theme => default, dark, halloween
 

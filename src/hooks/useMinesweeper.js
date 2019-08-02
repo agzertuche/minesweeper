@@ -1,15 +1,16 @@
-import { useState, useEffect } from 'react';
-import { CELL_STATUS } from '../../enums';
+import { useState, useEffect, useRef } from 'react';
+import { CELL_STATUS } from '../utils/enums';
 
 export default function useMinesweeper(size, mines) {
   const [cells, setCells] = useState([]);
+  const updatedCells = useRef([]);
 
   useEffect(() => {
     const createBoard = size => {
       for (let row = 0; row < size; row++) {
-        _cells[row] = [];
+        updatedCells.current[row] = [];
         for (let column = 0; column < size; column++) {
-          _cells[row].push({
+          updatedCells.current[row].push({
             row,
             column,
             status: CELL_STATUS.HIDDEN,
@@ -24,33 +25,33 @@ export default function useMinesweeper(size, mines) {
 
       let placedMines = 0;
       while (placedMines < mines) {
-        const row = getRandomNumber(_cells.length);
-        const column = getRandomNumber(_cells.length);
+        const row = getRandomNumber(updatedCells.current.length);
+        const column = getRandomNumber(updatedCells.current.length);
 
-        if (_cells[row][column].value === 9) {
+        if (updatedCells.current[row][column].value === 9) {
           continue;
         }
 
-        _cells[row][column].value = 9;
+        updatedCells.current[row][column].value = 9;
         placedMines++;
         updateNeighborCells(row, column);
       }
     };
 
     const updateNeighborCells = (row, column) => {
-      const rows = _cells.length;
+      const rows = updatedCells.current.length;
       for (
         let i = Math.max(0, row - 1);
         i <= Math.min(rows - 1, row + 1);
         i++
       ) {
-        const columns = _cells[i].length;
+        const columns = updatedCells.current[i].length;
         for (
           let j = Math.max(0, column - 1);
           j <= Math.min(columns - 1, column + 1);
           j++
         ) {
-          const cell = _cells[i][j];
+          const cell = updatedCells.current[i][j];
           if (i === row && j === column) {
             continue;
           } else if (cell.value !== 9) {
@@ -60,20 +61,24 @@ export default function useMinesweeper(size, mines) {
       }
     };
 
-    let _cells = [];
     createBoard(size);
     placeMines(mines);
-    setCells(_cells);
+    setCells(updatedCells.current);
   }, [size, mines]);
 
   const onCellRevealed = (x, y) => {
     const revealCell = (row, col) => {
       // check if cell is outside the board
-      if (row < 0 || row >= cells.length || col < 0 || col >= cells[0].length) {
+      if (
+        row < 0 ||
+        row >= updatedCells.current.length ||
+        col < 0 ||
+        col >= updatedCells.current[0].length
+      ) {
         return;
       }
 
-      const cell = cells[row][col];
+      const cell = updatedCells.current[row][col];
 
       if (
         cell.status === CELL_STATUS.FLAGGED ||
@@ -111,7 +116,7 @@ export default function useMinesweeper(size, mines) {
     };
 
     revealCell(x, y);
-    setCells([...cells]);
+    setCells([...updatedCells.current]);
   };
 
   return [cells, onCellRevealed];

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './Cell.scss';
-import { CELL_STATUS } from '../../enums';
+import { CELL_STATUS } from '../../utils/enums';
 
 function Cell({ row, column, status: initialStatus, value, onRevealed }) {
   const [status, setStatus] = useState(initialStatus);
