@@ -1,7 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { DIFFICULTY, GAME_STATUS } from '../utils/enums';
 
-const GameContext = React.createContext();
+const GameContext = React.createContext([{}, () => {}]);
 
-export default GameContext;
-export const GameConsumer = GameContext.Consumer;
-export const GameProvider = GameContext.Provider;
+const GameProvider = props => {
+  const [state, setState] = useState({
+    difficulty: DIFFICULTY.BEGGINER,
+    status: GAME_STATUS.PLAYING,
+  });
+  return (
+    <GameContext.Provider value={[state, setState]}>
+      {props.children}
+    </GameContext.Provider>
+  );
+};
+
+export { GameContext, GameProvider };

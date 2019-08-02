@@ -13,6 +13,10 @@ button {
     background: #bbbbbb;
     border: 1px dotted #666666;
     color: #333333;
+
+    &.exploded {
+      border: 2px solid #ff0000;
+    }
   }
 
   &:hover:not(:disabled) {

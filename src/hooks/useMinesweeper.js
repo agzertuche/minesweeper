@@ -1,7 +1,9 @@
-import { useState, useEffect, useRef } from 'react';
-import { CELL_STATUS } from '../utils/enums';
+import { useState, useEffect, useRef, useContext } from 'react';
+import { CELL_STATUS, GAME_STATUS } from '../utils/enums';
+import { GameContext } from '../contexts/game';
 
 export default function useMinesweeper(size, mines) {
+  const [gameState, setGameState] = useContext(GameContext);
   const [cells, setCells] = useState([]);
   const updatedCells = useRef([]);
 
@@ -94,8 +96,16 @@ export default function useMinesweeper(size, mines) {
       cell.status = CELL_STATUS.REVEALED;
 
       if (cell.value === 9) {
-        // TODO: trigger game over
-        console.warn('game over');
+        setGameState(state => ({ ...state, status: GAME_STATUS.GAMEOVER }));
+        updatedCells.current = updatedCells.current.map(c1 =>
+          c1.map(c2 => {
+            if (c2.value === 9) {
+              c2.status = CELL_STATUS.REVEALED;
+            }
+            return c2;
+          }),
+        );
+        cell.status = CELL_STATUS.EXPLODED;
         return;
       }
 
@@ -119,5 +129,5 @@ export default function useMinesweeper(size, mines) {
     setCells([...updatedCells.current]);
   };
 
-  return [cells, onCellRevealed];
+  return { cells, onCellRevealed, gameState };
 }

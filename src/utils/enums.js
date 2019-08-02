@@ -21,6 +21,7 @@ export const CELL_STATUS = Object.freeze({
   QUESTIONED: Symbol('QUESTIONED'),
   REVEALED: Symbol('REVEALED'),
   HIDDEN: Symbol('HIDDEN'),
+  EXPLODED: Symbol('EXPLODED'),
 });
 
 export const CONFIG = Object.freeze({
