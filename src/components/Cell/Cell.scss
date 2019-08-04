@@ -2,7 +2,8 @@ button {
   background: #cccccc;
   border: 3px outset #eeeeee;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 16px;
+  padding: 0;
 
   &:active {
     border-style: inset;

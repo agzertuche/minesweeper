@@ -11,16 +11,16 @@ function Cell({ status, children, ...eventHandlers }) {
       return '💥';
     }
 
-    if (status === CELL_STATUS.REVEALED) {
-      return children === 0 ? '' : hasMine() ? '💣' : children;
-    }
-
     if (status === CELL_STATUS.FLAGGED) {
       return '🚩';
     }
 
     if (status === CELL_STATUS.QUESTIONED) {
       return '❓';
+    }
+
+    if (status === CELL_STATUS.REVEALED) {
+      return children === 0 ? '' : hasMine() ? '💣' : children;
     }
   };
 
@@ -30,7 +30,7 @@ function Cell({ status, children, ...eventHandlers }) {
       disabled={
         status === CELL_STATUS.REVEALED || status === CELL_STATUS.EXPLODED
       }
-      className={status === CELL_STATUS.EXPLODED && 'exploded'}
+      className={status === CELL_STATUS.EXPLODED ? 'exploded' : null}
       {...eventHandlers}
     >
       {printValue()}

@@ -1,15 +1,17 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Cell } from '../Cell';
 import './Board.scss';
 import useMinesweeper from '../../hooks/useMinesweeper';
 import { CELL_STATUS } from '../../utils/enums';
 
 function Board({ size, mines }) {
-  const { cells, onCellRevealed, gameState } = useMinesweeper(size, mines);
-  const [userBoard, setUserBoard] = useState([]);
+  const { onCellRevealed, gameState, userBoard, setUserBoard } = useMinesweeper(
+    size,
+    mines,
+  );
 
   const missingBombs = () => {
-    const flags = cells.flat().reduce((acc, curr) => {
+    const flags = userBoard.flat().reduce((acc, curr) => {
       if (curr.status === CELL_STATUS.FLAGGED) {
         acc++;
       }
@@ -19,32 +21,39 @@ function Board({ size, mines }) {
     return mines - flags;
   };
 
-  const updateCellStatus = event => {
+  const updateCellStatus = (event, row, column) => {
     event.preventDefault();
-    setUserBoard(prevStatus => {
-      switch (prevStatus) {
+
+    setUserBoard(prevBoard => {
+      const cell = prevBoard[row][column];
+      switch (cell.status) {
         case CELL_STATUS.FLAGGED:
-          return CELL_STATUS.QUESTIONED;
+          cell.status = CELL_STATUS.QUESTIONED;
+          break;
         case CELL_STATUS.QUESTIONED:
-          return CELL_STATUS.HIDDEN;
+          cell.status = CELL_STATUS.HIDDEN;
+          break;
         case CELL_STATUS.HIDDEN:
-          return CELL_STATUS.FLAGGED;
+          cell.status = CELL_STATUS.FLAGGED;
+          break;
         default:
-          return prevStatus;
+          break;
       }
+
+      return [...prevBoard];
     });
   };
 
   return (
     <>
       <div>{`mising bombs: ${missingBombs()}`}</div>
-      <section className={`columns-${cells.length}`}>
-        {cells.map(cell => {
+      <section className={`columns-${userBoard.length}`}>
+        {userBoard.map(cell => {
           return cell.map(({ row, column, status, value }) => (
             <Cell
               key={`${row},${column}`}
               status={status}
-              onContextMenu={e => updateCellStatus(e)}
+              onContextMenu={e => updateCellStatus(e, row, column)}
               onClick={() => onCellRevealed(row, column)}
             >
               {value}

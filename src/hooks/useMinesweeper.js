@@ -2,9 +2,24 @@ import { useState, useEffect, useRef, useContext } from 'react';
 import { CELL_STATUS, GAME_STATUS } from '../utils/enums';
 import { GameContext } from '../contexts/game';
 
+const createBoard = size => {
+  let arr = [];
+  for (let row = 0; row < size; row++) {
+    arr[row] = [];
+    for (let column = 0; column < size; column++) {
+      arr[row].push({
+        row,
+        column,
+        status: CELL_STATUS.HIDDEN,
+      });
+    }
+  }
+  return arr;
+};
+
 export default function useMinesweeper(size, mines) {
   const [gameState, setGameState] = useContext(GameContext);
-  const [cells, setCells] = useState([]);
+  const [userBoard, setUserBoard] = useState(() => createBoard(size));
   const updatedCells = useRef([]);
 
   useEffect(() => {
@@ -65,7 +80,7 @@ export default function useMinesweeper(size, mines) {
 
     createBoard(size);
     placeMines(mines);
-    setCells(updatedCells.current);
+    setUserBoard(updatedCells.current);
   }, [size, mines]);
 
   const onCellRevealed = (x, y) => {
@@ -126,8 +141,8 @@ export default function useMinesweeper(size, mines) {
     };
 
     revealCell(x, y);
-    setCells([...updatedCells.current]);
+    setUserBoard([...updatedCells.current]);
   };
 
-  return { cells, onCellRevealed, gameState };
+  return { onCellRevealed, gameState, userBoard, setUserBoard };
 }
