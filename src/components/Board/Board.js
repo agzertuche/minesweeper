@@ -2,7 +2,7 @@ import React from 'react';
 import { Cell } from '../Cell';
 import './Board.scss';
 import useMinesweeper from '../../hooks/useMinesweeper';
-import { CELL_STATUS } from '../../utils/enums';
+import { CELL_STATUS, GAME_STATUS } from '../../utils/enums';
 
 function Board({ size, mines }) {
   const { onCellRevealed, gameState, userBoard, setUserBoard } = useMinesweeper(
@@ -47,7 +47,11 @@ function Board({ size, mines }) {
   return (
     <>
       <div>{`mising bombs: ${missingBombs()}`}</div>
-      <section className={`columns-${userBoard.length}`}>
+      <section
+        className={`columns-${userBoard.length} ${
+          gameState.status === GAME_STATUS.GAMEOVER ? 'gameover' : undefined
+        }`}
+      >
         {userBoard.map(cell => {
           return cell.map(({ row, column, status, value }) => (
             <Cell

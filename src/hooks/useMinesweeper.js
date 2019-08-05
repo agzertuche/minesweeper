@@ -83,6 +83,13 @@ export default function useMinesweeper(size, mines) {
     setUserBoard(updatedCells.current);
   }, [size, mines]);
 
+  const newGame = () => {
+    // TODO: 1. create new board
+    // TODO: 2. update game status
+
+    setGameState(GAME_STATUS.PLAYING);
+  };
+
   const onCellRevealed = (x, y) => {
     const revealCell = (row, col) => {
       // check if cell is outside the board
