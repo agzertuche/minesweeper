@@ -7,9 +7,7 @@ import { CONFIG } from '../../utils/enums';
 import { GameContext } from '../../contexts/game';
 import useTheme from '../../hooks/useTheme';
 
-// TODO: game status => playing, paused, gameover, completed/win
 // TODO: game stats => record, time
-
 const themes = {
   light: {
     background: '#f2f2f2',
@@ -31,8 +29,8 @@ const themes = {
 
 function Game() {
   const [theme, setTheme] = useState(themes.default);
-  const [state] = useContext(GameContext);
-  const { mines, size } = CONFIG[state.difficulty];
+  const [gameState, setGameState] = useContext(GameContext);
+  const { mines, size } = CONFIG[gameState.difficulty];
 
   useTheme(theme);
 
@@ -54,6 +52,32 @@ function Game() {
               <br></br>
             </label>
           ))}
+        </div>
+        <div>
+          {Object.getOwnPropertySymbols(CONFIG).map(difficulty => {
+            const difficultyString = difficulty.toString();
+            return (
+              <label key={difficultyString} htmlFor={difficultyString}>
+                <input
+                  defaultChecked={difficultyString === 'Symbol(BEGGINER)'}
+                  type="radio"
+                  name="difficulty"
+                  id={difficultyString}
+                  value={difficultyString}
+                  onChange={() => {
+                    setGameState(prevGameState => {
+                      return {
+                        ...prevGameState,
+                        difficulty,
+                      };
+                    });
+                  }}
+                />
+                {difficultyString}
+                <br></br>
+              </label>
+            );
+          })}
         </div>
         <Counter count={mines} />
         <Timer />

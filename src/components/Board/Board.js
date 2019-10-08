@@ -8,13 +8,13 @@ function Board({ size, mines }) {
   const {
     onCellRevealed,
     gameState,
-    userBoard,
-    setUserBoard,
+    board,
+    setBoard,
     newGame,
   } = useMinesweeper(size, mines);
 
   const missingBombs = () => {
-    const flags = userBoard.flat().reduce((acc, curr) => {
+    const flags = board.flat().reduce((acc, curr) => {
       if (curr.status === CELL_STATUS.FLAGGED) {
         acc++;
       }
@@ -27,7 +27,7 @@ function Board({ size, mines }) {
   const updateCellStatus = (event, row, column) => {
     event.preventDefault();
 
-    setUserBoard(prevBoard => {
+    setBoard(prevBoard => {
       const cell = prevBoard[row][column];
       switch (cell.status) {
         case CELL_STATUS.FLAGGED:
@@ -51,14 +51,14 @@ function Board({ size, mines }) {
     <>
       <div>
         {`mising bombs: ${missingBombs()}`}
-        <button onClick={newGame}>asdf</button>
+        <button onClick={newGame}>New Game</button>
       </div>
       <section
-        className={`columns-${userBoard.length} ${
+        className={`columns-${board.length} ${
           gameState.status === GAME_STATUS.GAMEOVER ? 'gameover' : undefined
         }`}
       >
-        {userBoard.map((cell, row) => {
+        {board.map((cell, row) => {
           return cell.map(({ status, value }, column) => (
             <Cell
               key={`${row},${column}`}

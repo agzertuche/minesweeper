@@ -3,10 +3,11 @@ import './Cell.scss';
 import { CELL_STATUS } from '../../utils/enums';
 
 function Cell({ status, children, ...eventHandlers }) {
-  const hasMine = () => {
+  function hasMine() {
     return children === 9;
-  };
-  const printValue = () => {
+  }
+
+  function printValue() {
     if (status === CELL_STATUS.EXPLODED) {
       return '💥';
     }
@@ -22,7 +23,7 @@ function Cell({ status, children, ...eventHandlers }) {
     if (status === CELL_STATUS.REVEALED) {
       return children === 0 ? '' : hasMine() ? '💣' : children;
     }
-  };
+  }
 
   return (
     <button
