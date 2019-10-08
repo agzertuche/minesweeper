@@ -1,93 +1,29 @@
-import { useState, useEffect, useRef, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { CELL_STATUS, GAME_STATUS } from '../utils/enums';
 import { GameContext } from '../contexts/game';
 
-const createBoard = size => {
-  let arr = [];
-  for (let row = 0; row < size; row++) {
-    arr[row] = [];
-    for (let column = 0; column < size; column++) {
-      arr[row].push({
-        row,
-        column,
-        status: CELL_STATUS.HIDDEN,
-      });
-    }
-  }
-  return arr;
-};
-
-export default function useMinesweeper(size, mines) {
+export default function useMinesweeper({ size = 9, mines = 10 } = {}) {
   const [gameState, setGameState] = useContext(GameContext);
-  const [userBoard, setUserBoard] = useState(() => createBoard(size));
-  const updatedCells = useRef([]);
+  const [userBoard, setUserBoard] = useState(() => board({ size, mines }));
 
   useEffect(() => {
-    const createBoard = size => {
-      for (let row = 0; row < size; row++) {
-        updatedCells.current[row] = [];
-        for (let column = 0; column < size; column++) {
-          updatedCells.current[row].push({
-            row,
-            column,
-            status: CELL_STATUS.HIDDEN,
-            value: 0,
-          });
-        }
-      }
-    };
-
-    const placeMines = mines => {
-      const getRandomNumber = max => Math.floor(Math.random() * 1000 + 1) % max;
-
-      let placedMines = 0;
-      while (placedMines < mines) {
-        const row = getRandomNumber(updatedCells.current.length);
-        const column = getRandomNumber(updatedCells.current.length);
-
-        if (updatedCells.current[row][column].value === 9) {
-          continue;
-        }
-
-        updatedCells.current[row][column].value = 9;
-        placedMines++;
-        updateNeighborCells(row, column);
-      }
-    };
-
-    const updateNeighborCells = (row, column) => {
-      const rows = updatedCells.current.length;
-      for (
-        let i = Math.max(0, row - 1);
-        i <= Math.min(rows - 1, row + 1);
-        i++
-      ) {
-        const columns = updatedCells.current[i].length;
-        for (
-          let j = Math.max(0, column - 1);
-          j <= Math.min(columns - 1, column + 1);
-          j++
-        ) {
-          const cell = updatedCells.current[i][j];
-          if (i === row && j === column) {
-            continue;
-          } else if (cell.value !== 9) {
-            cell.value++;
-          }
-        }
-      }
-    };
-
-    createBoard(size);
-    placeMines(mines);
-    setUserBoard(updatedCells.current);
-  }, [size, mines]);
+    const hiddenCells = userBoard
+      .flat()
+      .filter(c => c.status === CELL_STATUS.HIDDEN);
+    if (hiddenCells.length === mines) {
+      setGameState(prevGameState => ({
+        ...prevGameState,
+        status: GAME_STATUS.COMPLETED,
+      }));
+    }
+  }, [mines, setGameState, userBoard]);
 
   const newGame = () => {
-    // TODO: 1. create new board
-    // TODO: 2. update game status
-
-    setGameState(GAME_STATUS.PLAYING);
+    setUserBoard([...board({ size, mines })]);
+    setGameState(prevGameState => ({
+      ...prevGameState,
+      status: GAME_STATUS.PLAYING,
+    }));
   };
 
   const onCellRevealed = (x, y) => {
@@ -95,14 +31,14 @@ export default function useMinesweeper(size, mines) {
       // check if cell is outside the board
       if (
         row < 0 ||
-        row >= updatedCells.current.length ||
+        row >= userBoard.length ||
         col < 0 ||
-        col >= updatedCells.current[0].length
+        col >= userBoard[0].length
       ) {
         return;
       }
 
-      const cell = updatedCells.current[row][col];
+      const cell = userBoard[row][col];
 
       if (
         cell.status === CELL_STATUS.FLAGGED ||
@@ -119,7 +55,7 @@ export default function useMinesweeper(size, mines) {
 
       if (cell.value === 9) {
         setGameState(state => ({ ...state, status: GAME_STATUS.GAMEOVER }));
-        updatedCells.current = updatedCells.current.map(c1 =>
+        userBoard.map(c1 =>
           c1.map(c2 => {
             if (c2.value === 9) {
               c2.status = CELL_STATUS.REVEALED;
@@ -148,8 +84,54 @@ export default function useMinesweeper(size, mines) {
     };
 
     revealCell(x, y);
-    setUserBoard([...updatedCells.current]);
+    setUserBoard([...userBoard]);
   };
 
-  return { onCellRevealed, gameState, userBoard, setUserBoard };
+  return { onCellRevealed, gameState, userBoard, setUserBoard, newGame };
 }
+
+const board = ({ size, mines }) => {
+  const getRandomNumber = max => Math.floor(Math.random() * 1000 + 1) % max;
+  const updateNeighborCells = (x, y) => {
+    const rows = cells.length;
+    for (let i = Math.max(0, x - 1); i <= Math.min(rows - 1, x + 1); i++) {
+      const columns = cells[i].length;
+      for (let j = Math.max(0, y - 1); j <= Math.min(columns - 1, y + 1); j++) {
+        const cell = cells[i][j];
+        if (i === x && j === y) {
+          continue;
+        } else if (cell.value !== 9) {
+          cell.value++;
+        }
+      }
+    }
+  };
+
+  // create inital cells array
+  const cells = Array.from({ length: size }, () =>
+    Array.from({ length: size }, () => ({
+      status: CELL_STATUS.HIDDEN,
+      value: 0,
+    })),
+  );
+
+  // place mines randomly on board
+  let placedMines = 0;
+  while (placedMines < mines) {
+    const row = getRandomNumber(cells.length);
+    const column = getRandomNumber(cells.length);
+    const currentCell = cells[row][column];
+
+    // check if the randomly selected cell has already a bomb 💣
+    if (currentCell.value === 9) {
+      continue;
+    }
+
+    // if not place a bomb 💣
+    currentCell.value = 9;
+    placedMines++;
+    updateNeighborCells(row, column);
+  }
+
+  return cells;
+};

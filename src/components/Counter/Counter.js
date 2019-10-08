@@ -1,14 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-// TODO: handleTimer need to implement a way to increment/decrement values by time as explained by danabramov on his blog and by click events
-
-function Counter({ count: initialCount }) {
-  const [count, setCount] = useState(initialCount);
-
-  const increment = () => setCount(count => count + 1);
-  const decrement = () => setCount(count => count - 1);
-
-  return <div>{count}</div>;
+function Counter({ count }) {
+  return (
+    <div>{count < 10 ? `00${count}` : count < 100 ? `0${count}` : count}</div>
+  );
 }
 
 export default Counter;

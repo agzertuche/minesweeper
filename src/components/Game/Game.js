@@ -3,38 +3,59 @@ import './Game.scss';
 import { Board } from '../Board';
 import { Counter } from '../Counter';
 import { Timer } from '../Timer';
-import { GAME_STATUS, DIFFICULTY, CONFIG } from '../../utils/enums';
-import { GameProvider, GameContext } from '../../contexts/game';
+import { CONFIG } from '../../utils/enums';
+import { GameContext } from '../../contexts/game';
+import useTheme from '../../hooks/useTheme';
 
-// ! TODO: game status => playing, paused, gameover, completed/win
+// TODO: game status => playing, paused, gameover, completed/win
 // TODO: game stats => record, time
-// TODO: game theme => default, dark, halloween
+
+const themes = {
+  light: {
+    background: '#f2f2f2',
+    color: '#333333',
+  },
+  default: {
+    background: '#333333',
+    color: '#f2f2f2',
+  },
+  halloween: {
+    background: '#eb6123',
+    color: 'black',
+  },
+  gamer: {
+    background: '#663399',
+    color: 'yellow',
+  },
+};
 
 function Game() {
-  // const [difficulty, setDifficulty] = useState(DIFFICULTY.BEGGINER);
-  const [state, setState] = useContext(GameContext);
-
+  const [theme, setTheme] = useState(themes.default);
+  const [state] = useContext(GameContext);
   const { mines, size } = CONFIG[state.difficulty];
 
-  const newGame = () => {
-    setState(state => ({
-      ...state,
-      difficulty:
-        state.difficulty === DIFFICULTY.BEGGINER
-          ? DIFFICULTY.INTERMEDIATE
-          : state.difficulty === DIFFICULTY.INTERMEDIATE
-          ? DIFFICULTY.ADVANCED
-          : state.difficulty === DIFFICULTY.ADVANCED
-          ? DIFFICULTY.BEGGINER
-          : DIFFICULTY.BEGGINER,
-    }));
-  };
+  useTheme(theme);
 
   return (
     <main>
       <header>
+        <div>
+          {Object.keys(themes).map(themeName => (
+            <label key={themeName} htmlFor={themeName}>
+              <input
+                defaultChecked={themeName === 'default'}
+                type="radio"
+                name="theme"
+                id={themeName}
+                value={themeName}
+                onChange={() => setTheme(themes[themeName])}
+              />
+              {themeName}
+              <br></br>
+            </label>
+          ))}
+        </div>
         <Counter count={mines} />
-        <button onClick={newGame}>New Game</button>
         <Timer />
       </header>
       <section>

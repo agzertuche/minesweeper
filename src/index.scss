@@ -1,7 +1,14 @@
 @import-normalize; /* bring in normalize.css styles */
+@mixin variable($variable, $property, $fallback) {
+  // Fallback for browsers that don't support css vars
+  #{$property}: $fallback;
+  #{$property}: var(--#{$variable});
+}
 
 html {
   box-sizing: border-box;
+  @include variable(background, background, white);
+  @include variable(color, color, black);
 }
 
 *,
@@ -17,4 +24,9 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+input,
+label {
+  cursor: pointer;
 }

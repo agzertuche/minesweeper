@@ -8,6 +8,7 @@ export const GAME_STATUS = Object.freeze({
   PLAYING: Symbol('PLAYING'),
   PAUSED: Symbol('PAUSED'),
   GAMEOVER: Symbol('GAMEOVER'),
+  COMPLETED: Symbol('COMPLETED'),
 });
 
 export const THEME = Object.freeze({

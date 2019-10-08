@@ -5,10 +5,13 @@ import useMinesweeper from '../../hooks/useMinesweeper';
 import { CELL_STATUS, GAME_STATUS } from '../../utils/enums';
 
 function Board({ size, mines }) {
-  const { onCellRevealed, gameState, userBoard, setUserBoard } = useMinesweeper(
-    size,
-    mines,
-  );
+  const {
+    onCellRevealed,
+    gameState,
+    userBoard,
+    setUserBoard,
+    newGame,
+  } = useMinesweeper(size, mines);
 
   const missingBombs = () => {
     const flags = userBoard.flat().reduce((acc, curr) => {
@@ -46,14 +49,17 @@ function Board({ size, mines }) {
 
   return (
     <>
-      <div>{`mising bombs: ${missingBombs()}`}</div>
+      <div>
+        {`mising bombs: ${missingBombs()}`}
+        <button onClick={newGame}>asdf</button>
+      </div>
       <section
         className={`columns-${userBoard.length} ${
           gameState.status === GAME_STATUS.GAMEOVER ? 'gameover' : undefined
         }`}
       >
-        {userBoard.map(cell => {
-          return cell.map(({ row, column, status, value }) => (
+        {userBoard.map((cell, row) => {
+          return cell.map(({ status, value }, column) => (
             <Cell
               key={`${row},${column}`}
               status={status}

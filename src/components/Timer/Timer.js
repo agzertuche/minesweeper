@@ -1,25 +1,21 @@
-import React, { useState, useRef, useEffect } from 'react';
-
-//TODO: improve timer based on https://overreacted.io/making-setinterval-declarative-with-react-hooks/
+import React, { useState, useContext } from 'react';
+import useInterval from '../../hooks/useInterval';
+import { GameContext } from '../../contexts/game';
+import { GAME_STATUS } from '../../utils/enums';
+import { Counter } from '../Counter';
 
 function Timer({ delay = 1000 }) {
   const [timer, setTimer] = useState(0);
-  const timerHandler = useRef(null);
+  const [gameState] = useContext(GameContext);
 
-  useEffect(() => {
-    if (delay !== null) {
-      timerHandler.current = setInterval(() => {
-        setTimer(time => time + 1);
-      }, delay);
-    }
-    return () => {
-      clearInterval(timerHandler.current);
-    };
-  }, [delay, timer]);
-
-  return (
-    <div>{timer < 10 ? `00${timer}` : timer < 100 ? `0${timer}` : timer}</div>
+  useInterval(
+    () => {
+      setTimer(timer + 1);
+    },
+    gameState.status === GAME_STATUS.PLAYING ? delay : null,
   );
+
+  return <Counter count={timer} />;
 }
 
 export default Timer;
