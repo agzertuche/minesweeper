@@ -1,17 +1,34 @@
-section {
+.stats {
+  display: flex;
+
+  * {
+    flex: 1;
+    margin: 0.4rem;
+    text-align: center;
+  }
+
+  button {
+    font-size: 16px;
+    flex: 10% 0 0;
+  }
+}
+
+.board {
   display: grid;
+  align-items: center;
+  justify-content: center;
 
   &.columns-9 {
-    grid-template-columns: repeat(9, 30px);
-    grid-template-rows: repeat(9, 30px);
+    grid-template-columns: repeat(9, 20px);
+    grid-template-rows: repeat(9, 20px);
   }
   &.columns-16 {
-    grid-template-columns: repeat(16, 30px);
-    grid-template-rows: repeat(16, 30px);
+    grid-template-columns: repeat(16, 20px);
+    grid-template-rows: repeat(16, 20px);
   }
   &.columns-24 {
-    grid-template-columns: repeat(24, 30px);
-    grid-template-rows: repeat(24, 30px);
+    grid-template-columns: repeat(24, 20px);
+    grid-template-rows: repeat(24, 20px);
   }
 
   &.gameover {

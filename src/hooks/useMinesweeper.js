@@ -16,15 +16,17 @@ export default function useMinesweeper() {
       setGameState(prevGameState => ({
         ...prevGameState,
         status: GAME_STATUS.COMPLETED,
+        records: [...prevGameState.records, prevGameState.time].sort(),
       }));
     }
   }, [setGameState, board]);
 
-  function newGame() {
+  function startNewGame() {
     setBoard([...createBoard()]);
     setGameState(prevGameState => ({
       ...prevGameState,
       status: GAME_STATUS.PLAYING,
+      time: 0,
     }));
   }
 
@@ -85,7 +87,7 @@ export default function useMinesweeper() {
   }
 
   function createBoard() {
-    const { mines, size } = CONFIG[gameState.difficulty];
+    const { mines, size } = CONFIG.DIFFICULTY[gameState.difficulty];
 
     // create inital cells array
     const cells = Array.from({ length: size }, () =>
@@ -141,9 +143,8 @@ export default function useMinesweeper() {
 
   return {
     onCellRevealed,
-    gameState,
     board,
     setBoard,
-    newGame,
+    startNewGame,
   };
 }

@@ -1,6 +1,6 @@
 import React from 'react';
-import './Cell.scss';
 import { CELL_STATUS } from '../../utils/enums';
+import './Cell.scss';
 
 function Cell({ status, children, ...eventHandlers }) {
   function hasMine() {

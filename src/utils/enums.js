@@ -12,9 +12,10 @@ export const GAME_STATUS = Object.freeze({
 });
 
 export const THEME = Object.freeze({
-  LIGHT: Symbol('LIGHT'),
   DARK: Symbol('DARK'),
+  LIGHT: Symbol('LIGHT'),
   HALLOWEEN: Symbol('HALLOWEEN'),
+  GAMER: Symbol('GAMER'),
 });
 
 export const CELL_STATUS = Object.freeze({
@@ -26,16 +27,36 @@ export const CELL_STATUS = Object.freeze({
 });
 
 export const CONFIG = Object.freeze({
-  [DIFFICULTY.BEGGINER]: {
-    mines: 10,
-    size: 9,
+  DIFFICULTY: {
+    [DIFFICULTY.BEGGINER]: {
+      mines: 10,
+      size: 9,
+    },
+    [DIFFICULTY.INTERMEDIATE]: {
+      mines: 40,
+      size: 16,
+    },
+    [DIFFICULTY.ADVANCED]: {
+      mines: 99,
+      size: 24,
+    },
   },
-  [DIFFICULTY.INTERMEDIATE]: {
-    mines: 40,
-    size: 16,
-  },
-  [DIFFICULTY.ADVANCED]: {
-    mines: 99,
-    size: 24,
+  THEME: {
+    [THEME.LIGHT]: {
+      background: '#f2f2f2',
+      color: '#333333',
+    },
+    [THEME.DARK]: {
+      background: '#333333',
+      color: '#f2f2f2',
+    },
+    [THEME.HALLOWEEN]: {
+      background: '#eb6123',
+      color: 'black',
+    },
+    [THEME.GAMER]: {
+      background: '#663399',
+      color: 'yellow',
+    },
   },
 });

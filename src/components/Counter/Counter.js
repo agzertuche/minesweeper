@@ -1,8 +1,11 @@
 import React from 'react';
 
-function Counter({ count }) {
+function Counter({ count, label }) {
   return (
-    <div>{count < 10 ? `00${count}` : count < 100 ? `0${count}` : count}</div>
+    <div>
+      {label}
+      {count < 10 ? `00${count}` : count < 100 ? `0${count}` : count}
+    </div>
   );
 }
 

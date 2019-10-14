@@ -1,30 +1,18 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Cell } from '../Cell';
-import './Board.scss';
+import { Counter } from '../Counter';
+import { Timer } from '../Timer';
+import { CELL_STATUS, GAME_STATUS, CONFIG } from '../../utils/enums';
+import { GameContext } from '../../contexts/game';
 import useMinesweeper from '../../hooks/useMinesweeper';
-import { CELL_STATUS, GAME_STATUS } from '../../utils/enums';
 
-function Board({ size, mines }) {
-  const {
-    onCellRevealed,
-    gameState,
-    board,
-    setBoard,
-    newGame,
-  } = useMinesweeper(size, mines);
+import './Board.scss';
 
-  const missingBombs = () => {
-    const flags = board.flat().reduce((acc, curr) => {
-      if (curr.status === CELL_STATUS.FLAGGED) {
-        acc++;
-      }
-      return acc;
-    }, 0);
+function Board() {
+  const { onCellRevealed, board, setBoard, startNewGame } = useMinesweeper();
+  const [gameState] = useContext(GameContext);
 
-    return mines - flags;
-  };
-
-  const updateCellStatus = (event, row, column) => {
+  function onCellMarked(event, row, column) {
     event.preventDefault();
 
     setBoard(prevBoard => {
@@ -45,17 +33,37 @@ function Board({ size, mines }) {
 
       return [...prevBoard];
     });
-  };
+  }
+
+  function missingBombs() {
+    const { mines } = CONFIG.DIFFICULTY[gameState.difficulty];
+    const flags = board.flat().filter(x => x.status === CELL_STATUS.FLAGGED);
+
+    return mines - flags.length;
+  }
 
   return (
     <>
-      <div>
-        {`mising bombs: ${missingBombs()}`}
-        <button onClick={newGame}>New Game</button>
+      <div className="stats">
+        <Counter label="Mines: " count={missingBombs()} />
+        <button onClick={startNewGame}>
+          {
+            {
+              PLAYING: '🧐',
+              PAUSED: '😯',
+              GAMEOVER: '🤯',
+              COMPLETED: '😎',
+            }[gameState.status.description]
+          }
+        </button>
+        <Timer />
       </div>
-      <section
-        className={`columns-${board.length} ${
-          gameState.status === GAME_STATUS.GAMEOVER ? 'gameover' : undefined
+      <div
+        className={`board columns-${board.length} ${
+          gameState.status === GAME_STATUS.GAMEOVER ||
+          gameState.status === GAME_STATUS.COMPLETED
+            ? 'gameover'
+            : undefined
         }`}
       >
         {board.map((cell, row) => {
@@ -63,15 +71,14 @@ function Board({ size, mines }) {
             <Cell
               key={`${row},${column}`}
               status={status}
-              onContextMenu={e => updateCellStatus(e, row, column)}
+              onContextMenu={e => onCellMarked(e, row, column)}
               onClick={() => onCellRevealed(row, column)}
             >
               {value}
             </Cell>
           ));
         })}
-      </section>
-      <div>{`status: ${gameState.status.toString()}`}</div>
+      </div>
     </>
   );
 }
